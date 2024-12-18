@@ -1,0 +1,8 @@
+{
+  "name": "PandaCode",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite",
+  "id": "5da37765"
+}
