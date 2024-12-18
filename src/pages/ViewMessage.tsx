@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import { Message, getMessage } from '../data/messages';
+import { Formula, getFormula } from '../data/formulas';
+import { MathJax, MathJaxContext } from 'better-react-mathjax';
+
 import {
   IonBackButton,
   IonButtons,
@@ -18,13 +21,22 @@ import { useParams } from 'react-router';
 import './ViewMessage.css';
 
 function ViewMessage() {
-  const [message, setMessage] = useState<Message>();
+  const [formula, setFormula] = useState<Formula>();
   const params = useParams<{ id: string }>();
 
   useIonViewWillEnter(() => {
-    const msg = getMessage(parseInt(params.id, 10));
-    setMessage(msg);
+    const currentFormula = getFormula(parseInt(params.id, 10));
+    setFormula(currentFormula);
   });
+
+  const config = {
+    "MathJax": {
+      "tex": {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      }
+    }
+  };
 
   return (
     <IonPage id="view-message-page">
@@ -37,39 +49,30 @@ function ViewMessage() {
       </IonHeader>
 
       <IonContent fullscreen>
-        {message ? (
-          <>
-            <IonItem>
-              <IonIcon aria-hidden="true" icon={personCircle} color="primary"></IonIcon>
-              <IonLabel className="ion-text-wrap">
-                <h2>
-                  {message.fromName}
-                  <span className="date">
-                    <IonNote>{message.date}</IonNote>
-                  </span>
-                </h2>
-                <h3>
-                  To: <IonNote>Me</IonNote>
-                </h3>
-              </IonLabel>
-            </IonItem>
 
-            <div className="ion-padding">
-              <h1>{message.subject}</h1>
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam, quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor
-                in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-                nulla pariatur. Excepteur sint occaecat cupidatat non proident,
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
+        <MathJaxContext config={config}>
+          {formula ? (
+            <div>
+              <h2 className="text-xl font-semibold mb-2">
+                {formula.name}
+              </h2>
+              <div className="mb-4">
+                <MathJax>
+                  {"$$" + formula.formula + "$$"}
+                </MathJax>
+              </div>
+              <p className="text-gray-600">
+                {formula.description}
               </p>
             </div>
-          </>
-        ) : (
-          <div>Message not found</div>
-        )}
+          ) : (
+            <p className="text-gray-500">
+              Select a formula to view details
+            </p>
+          )}
+
+        </MathJaxContext>
+
       </IonContent>
     </IonPage>
   );
