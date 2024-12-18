@@ -40,13 +40,13 @@ const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>
-        <Route path="/" exact={true}>
-          <Redirect to="/home" />
+        <Route path="/panda-code/" exact={true}>
+          <Redirect to="/panda-code/home" />
         </Route>
-        <Route path="/home" exact={true}>
+        <Route path="/panda-code/home" exact={true}>
           <Home />
         </Route>
-        <Route path="/message/:id">
+        <Route path="/panda-code/message/:id">
            <ViewMessage />
         </Route>
       </IonRouterOutlet>
